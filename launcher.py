@@ -130,7 +130,7 @@ class LauncherApp:
         self.root.title("PRH EPUB 3 Studio — Launcher")
         self.root.resizable(False, False)
         self.root.configure(bg=T["bg"])
-        self._center(440, 520)
+        self._center(480, 580)
         self._build_ui()
         self.root.protocol("WM_DELETE_WINDOW", self._quit)
 
@@ -164,7 +164,7 @@ class LauncherApp:
                  ).pack(anchor="w")
 
         # ── Status ────────────────────────────────────────────────────────────
-        sf = tk.Frame(self.root, bg=T["bg"], pady=10)
+        sf = tk.Frame(self.root, bg=T["bg"], pady=8)
         sf.pack(fill="x")
 
         self.status_dot = tk.Label(sf, text="●", bg=T["bg"],
@@ -176,10 +176,50 @@ class LauncherApp:
                                    font=("Segoe UI", 10, "bold"))
         self.status_lbl.pack(side="left")
 
-        # ── Log box ───────────────────────────────────────────────────────────
+        # ── Bottom Fixed Panel (Pack first from bottom so it never clips!) ─────
+        bottom_panel = tk.Frame(self.root, bg=T["bg"])
+        bottom_panel.pack(side="bottom", fill="x", padx=20, pady=(0, 10))
+
+        tk.Label(bottom_panel,
+                 text=f"github.com/{GITHUB_USER}/{GITHUB_REPO}",
+                 bg=T["bg"], fg=T["muted"], font=("Segoe UI", 8)
+                 ).pack(side="bottom", pady=(6, 0))
+
+        bf = tk.Frame(bottom_panel, bg=T["bg"])
+        bf.pack(side="bottom", fill="x", pady=(8, 0))
+
+        self.open_btn = tk.Button(bf, text="🌐  Open in Browser",
+                                  bg=T["accent"], fg="#FFFFFF",
+                                  font=("Segoe UI", 10, "bold"),
+                                  relief="flat", bd=0,
+                                  padx=18, pady=8, cursor="hand2",
+                                  activebackground=T["accent_dark"],
+                                  activeforeground="#FFFFFF",
+                                  state="disabled",
+                                  command=self._open_browser)
+        self.open_btn.pack(side="left", fill="x", expand=True, padx=(0, 8))
+
+        tk.Button(bf, text="✕  Quit",
+                  bg=T["surface2"], fg=T["accent_dark"],
+                  font=("Segoe UI", 10, "bold"), relief="flat", bd=0,
+                  padx=18, pady=8, cursor="hand2",
+                  command=self._quit
+                  ).pack(side="right")
+
+        # Progress bar
+        pf = tk.Frame(bottom_panel, bg=T["bg"])
+        pf.pack(side="bottom", fill="x", pady=(6, 4))
+
+        self.prog_canvas = tk.Canvas(pf, height=6, bg="#E2E8F0",
+                                     highlightthickness=0, bd=0)
+        self.prog_canvas.pack(fill="x")
+        self.prog_bar = self.prog_canvas.create_rectangle(
+            0, 0, 0, 6, fill=T["accent"], width=0)
+
+        # ── Log box (takes remaining middle space safely) ───────────────────────
         lf = tk.Frame(self.root, bg=T["surface"],
                       highlightbackground=T["border"], highlightthickness=1)
-        lf.pack(fill="both", expand=True, padx=20, pady=(0, 12))
+        lf.pack(fill="both", expand=True, padx=20, pady=(0, 8))
 
         self.log = tk.Text(lf, bg=T["surface"], fg=T["text"],
                            font=("Consolas", 9), relief="flat", bd=0,
@@ -193,44 +233,6 @@ class LauncherApp:
         self.log.tag_config("accent", foreground=T["accent"])
         self.log.tag_config("muted",  foreground=T["muted"])
         self.log.tag_config("text",   foreground=T["text"])
-
-        # ── Progress bar ──────────────────────────────────────────────────────
-        pf = tk.Frame(self.root, bg=T["bg"])
-        pf.pack(fill="x", padx=20, pady=(0, 12))
-
-        self.prog_canvas = tk.Canvas(pf, height=6, bg="#E2E8F0",
-                                     highlightthickness=0, bd=0)
-        self.prog_canvas.pack(fill="x")
-        self.prog_bar = self.prog_canvas.create_rectangle(
-            0, 0, 0, 6, fill=T["accent"], width=0)
-
-        # ── Buttons ───────────────────────────────────────────────────────────
-        bf = tk.Frame(self.root, bg=T["bg"])
-        bf.pack(fill="x", padx=20, pady=(0, 14))
-
-        self.open_btn = tk.Button(bf, text="🌐  Open in Browser",
-                                  bg=T["accent"], fg="#FFFFFF",
-                                  font=("Segoe UI", 10, "bold"),
-                                  relief="flat", bd=0,
-                                  padx=18, pady=10, cursor="hand2",
-                                  activebackground=T["accent_dark"],
-                                  activeforeground="#FFFFFF",
-                                  state="disabled",
-                                  command=self._open_browser)
-        self.open_btn.pack(side="left", fill="x", expand=True, padx=(0, 8))
-
-        tk.Button(bf, text="✕  Quit",
-                  bg=T["surface2"], fg=T["accent_dark"],
-                  font=("Segoe UI", 10, "bold"), relief="flat", bd=0,
-                  padx=18, pady=10, cursor="hand2",
-                  command=self._quit
-                  ).pack(side="right")
-
-        # ── Footer ────────────────────────────────────────────────────────────
-        tk.Label(self.root,
-                 text=f"github.com/{GITHUB_USER}/{GITHUB_REPO}",
-                 bg=T["bg"], fg=T["muted"], font=("Segoe UI", 8)
-                 ).pack(pady=(0, 8))
 
     def _load_logo(self, header):
         try:
