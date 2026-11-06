@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PRH EPUB 3 / XHTML Converter Studio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="brand">
+      <img src="{{ url_for('static', filename='img/logo.webp') }}" alt="VilPower Logo" class="brand-logo">
+      <div class="brand-divider"></div>
+      <span class="brand-title">PRH EPUB 3 Studio</span>
+      <span class="brand-badge">Spec 8.0</span>
+    </div>
+    <div class="header-meta">
+      Front Matter • Continuous Chapters • Back Matter
+    </div>
+  </header>
+
+  <!-- Main Grid -->
+  <div class="app-container">
+    <!-- Left Configuration Sidebar -->
+    <aside class="sidebar">
+      <!-- 1. PDF File Input -->
+      <div class="form-group">
+        <label>1. Source PDF Document</label>
+        <div class="file-dropzone" id="dropzone">
+          <span class="file-label" id="file-label">📁 Choose or Drop PDF Document</span>
+          <input type="file" id="pdf_file" name="pdf_file" accept=".pdf">
+        </div>
+      </div>
+
+      <!-- 2. Category Dropdown -->
+      <div class="form-group">
+        <label>2. Matter Category</label>
+        <select id="matter_category" onchange="handleCategoryChange()">
+          <option value="chapter" selected>Body Matter / Chapters (chapter.py)</option>
+          <option value="fm">Front Matter (fm.py)</option>
+          <option value="back">Back Matter (back.py)</option>
+        </select>
+      </div>
+
+      <!-- 3. Section Name Dropdown -->
+      <div class="form-group">
+        <label>3. Section / Page Type</label>
+        <select id="matter_section">
+          <!-- Populated dynamically via main.js -->
+        </select>
+      </div>
+
+      <!-- 4. Page Range -->
+      <div class="form-group">
+        <label id="page-label-text">4. Page Selection</label>
+        <div class="grid-2">
+          <div>
+            <span class="helper-text">Start / Target Page:</span>
+            <input type="number" id="start_page" value="1" min="1">
+          </div>
+          <div id="end_page_wrap">
+            <span class="helper-text">End Page (blank = all):</span>
+            <input type="number" id="end_page" placeholder="All" min="1">
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Metadata -->
+      <div class="form-group">
+        <label>5. Book Title</label>
+        <input type="text" id="book_title" value="The Storyteller: The Novelization" placeholder="Enter book title">
+      </div>
+
+      <div class="form-group">
+        <label>6. Ebook ISBN</label>
+        <input type="text" id="isbn" value="9781613982976" placeholder="e.g. 978XXXXXXXXXX">
+      </div>
+
+      <!-- Run Action -->
+      <button class="btn-primary" id="run-btn" onclick="runConversion()">
+        <span>⚡</span> Run &amp; Convert to XHTML
+      </button>
+
+      <div class="status-bar" id="status-bar">Ready for conversion</div>
+    </aside>
+
+    <!-- Right Workspace / XHTML Output Panel -->
+    <main class="preview-panel">
+      <div class="preview-toolbar">
+        <div class="preview-title" id="preview-title">
+          <span>📄</span> Generated XHTML Preview
+        </div>
+        <div class="actions-group">
+          <button class="btn-secondary" id="wrap-toggle-btn" onclick="toggleWrap()">↩ Word Wrap: ON</button>
+          <button class="btn-secondary" onclick="copyCode()">📋 Copy XHTML</button>
+          <button class="btn-secondary" onclick="downloadFile()">💾 Download .xhtml</button>
+        </div>
+      </div>
+
+      <div class="code-container">
+        <textarea id="output-code" class="code-editor" readonly spellcheck="false" placeholder="Upload a PDF, pick your category and section name, and click 'Run & Convert to XHTML'..."></textarea>
+      </div>
+
+      <div class="stats-bar">
+        <span id="stat-lines">0 lines</span>
+        <span id="stat-chars">0 characters</span>
+        <span>PRH XHTML Strict</span>
+      </div>
+    </main>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
+
